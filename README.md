@@ -18,7 +18,7 @@ AI-powered personal assistant built on Cloudflare Workers with persistent memory
 
 ## Live Demo
 
-[Your deployed URL will go here after deployment]
+https://cf-ai-personal-assistant.onuohadaniel06.workers.dev/
 
 ## Running Locally
 
