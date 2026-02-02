@@ -2,13 +2,20 @@ import { ConversationMemory } from './durable-objects/ConversationMemory';
 
 export { ConversationMemory };
 
+interface AiBinding {
+	run(
+		model: string,
+		options: { messages: Array<{ role: string; content: string }> },
+	): Promise<{ response: string }>;
+}
+
 interface Env {
-  AI: any;
-  MEMORY: DurableObjectNamespace;
+	AI: AiBinding;
+	MEMORY: DurableObjectNamespace;
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+	async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
     // CORS headers
@@ -32,7 +39,8 @@ export default {
     // Chat endpoint
     if (url.pathname === '/api/chat' && request.method === 'POST') {
       try {
-        const { message, userId = 'default-user' } = await request.json();
+        const body = (await request.json()) as { message?: string; userId?: string };
+        const { message, userId = 'default-user' } = body;
 
         // Get Durable Object instance for this user
         const id = env.MEMORY.idFromName(userId);
@@ -46,7 +54,10 @@ export default {
 
         // Get conversation history
         const historyResponse = await stub.fetch('https://fake-host/history');
-        const messages = await historyResponse.json();
+        const messages = (await historyResponse.json()) as Array<{
+          role: string;
+          content: string;
+        }>;
 
         // Call Workers AI with Llama 3.3
         const aiResponse = await env.AI.run('@cf/meta/llama-3.3-70b-instruct-fp8-fast', {
@@ -71,7 +82,8 @@ export default {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       } catch (error) {
-        return new Response(JSON.stringify({ error: error.message }), {
+        const message = error instanceof Error ? error.message : String(error);
+        return new Response(JSON.stringify({ error: message }), {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
@@ -93,7 +105,8 @@ export default {
 
     // Clear conversation
     if (url.pathname === '/api/clear' && request.method === 'POST') {
-      const { userId = 'default-user' } = await request.json();
+      const clearBody = (await request.json()) as { userId?: string };
+      const { userId = 'default-user' } = clearBody;
       const id = env.MEMORY.idFromName(userId);
       const stub = env.MEMORY.get(id);
       await stub.fetch('https://fake-host/clear', { method: 'POST' });

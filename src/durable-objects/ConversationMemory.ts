@@ -11,15 +11,17 @@ export class ConversationMemory {
     const url = new URL(request.url);
 
     if (url.pathname === "/add" && request.method === "POST") {
-      const message = await request.json();
+      const message = (await request.json()) as { role: string; content: string };
       this.messages.push(message);
       await this.state.storage.put("messages", this.messages);
       return new Response(JSON.stringify({ success: true }));
     }
 
     if (url.pathname === "/history") {
-      const stored = await this.state.storage.get("messages");
-      this.messages = stored || [];
+      const stored = (await this.state.storage.get("messages")) as
+        | Array<{ role: string; content: string }>
+        | undefined;
+      this.messages = stored ?? [];
       return new Response(JSON.stringify(this.messages));
     }
 
