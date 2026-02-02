@@ -2,13 +2,20 @@ import { ConversationMemory } from './durable-objects/ConversationMemory';
 
 export { ConversationMemory };
 
+interface AiBinding {
+	run(
+		model: string,
+		options: { messages: Array<{ role: string; content: string }> },
+	): Promise<{ response: string }>;
+}
+
 interface Env {
-  AI: any;
-  MEMORY: DurableObjectNamespace;
+	AI: AiBinding;
+	MEMORY: DurableObjectNamespace;
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+	async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
     // CORS headers
@@ -71,7 +78,8 @@ export default {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       } catch (error) {
-        return new Response(JSON.stringify({ error: error.message }), {
+        const message = error instanceof Error ? error.message : String(error);
+        return new Response(JSON.stringify({ error: message }), {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
