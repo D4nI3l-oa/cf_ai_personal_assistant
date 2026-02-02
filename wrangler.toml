@@ -4,3 +4,12 @@ compatibility_date = "2025-01-21"
 
 [ai]
 binding = "AI"
+
+[[durable_objects.bindings]]
+name = "MEMORY"
+class_name = "ConversationMemory"
+script_name = "cf-ai-personal-assistant"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["ConversationMemory"]

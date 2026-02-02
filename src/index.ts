@@ -16,6 +16,19 @@ interface Env {
 
 export default {
 	async fetch(request: Request, env: Env): Promise<Response> {
+    if (!env.MEMORY) {
+      return new Response(
+        JSON.stringify({
+          error:
+            'MEMORY binding is missing. Add durable_objects to wrangler.toml or wrangler.jsonc and restart wrangler dev.',
+        }),
+        {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+    }
+
     const url = new URL(request.url);
 
     // CORS headers
@@ -39,7 +52,18 @@ export default {
     // Chat endpoint
     if (url.pathname === '/api/chat' && request.method === 'POST') {
       try {
-        const { message, userId = 'default-user' } = await request.json();
+        const body = (await request.json()) as { message?: string; userId?: string };
+        const message = body?.message?.trim();
+        const userId = body?.userId ?? 'default-user';
+
+        if (!message) {
+          return new Response(
+            JSON.stringify({ error: 'Missing or empty "message" in request body' }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+          );
+        }
+
+        if (!env.MEMORY) return missingBindingResponse(corsHeaders);
 
         // Get Durable Object instance for this user
         const id = env.MEMORY.idFromName(userId);
@@ -88,6 +112,7 @@ export default {
 
     // Get conversation history
     if (url.pathname === '/api/history') {
+      if (!env.MEMORY) return missingBindingResponse(corsHeaders);
       const userId = url.searchParams.get('userId') || 'default-user';
       const id = env.MEMORY.idFromName(userId);
       const stub = env.MEMORY.get(id);
@@ -101,6 +126,7 @@ export default {
 
     // Clear conversation
     if (url.pathname === '/api/clear' && request.method === 'POST') {
+      if (!env.MEMORY) return missingBindingResponse(corsHeaders);
       const { userId = 'default-user' } = await request.json();
       const id = env.MEMORY.idFromName(userId);
       const stub = env.MEMORY.get(id);
@@ -252,7 +278,13 @@ const HTML_CONTENT = `<!DOCTYPE html>
                 });
 
                 const data = await response.json();
-                addMessage('assistant', data.response);
+                if (!response.ok) {
+                    addMessage('assistant', data.error || 'Request failed.');
+                } else if (data.response != null) {
+                    addMessage('assistant', data.response);
+                } else {
+                    addMessage('assistant', 'No response from server.');
+                }
             } catch (error) {
                 addMessage('assistant', 'Sorry, there was an error processing your request.');
             }
