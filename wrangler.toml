@@ -12,4 +12,4 @@ script_name = "cf-ai-personal-assistant"
 
 [[migrations]]
 tag = "v1"
-new_classes = ["ConversationMemory"]
+new_sqlite_classes = ["ConversationMemory"]
