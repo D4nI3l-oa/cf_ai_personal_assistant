@@ -23,7 +23,7 @@
 		]
 	},
 	"migrations": [
-		{ "tag": "v1", "new_classes": ["ConversationMemory"] }
+		{ "tag": "v1", "new_sqlite_classes": ["ConversationMemory"] }
 	]
 	/**
 	 * Smart Placement
