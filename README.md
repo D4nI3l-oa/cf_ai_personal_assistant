@@ -53,8 +53,3 @@ https://cf-ai-personal-assistant.onuohadaniel06.workers.dev/
 - `POST /api/clear` - Clear conversation
 
 ## Architecture
-
-1. **Frontend**: Simple chat UI served by the Worker
-2. **Worker**: Handles API requests and coordinates AI & memory
-3. **Durable Objects**: Stores conversation history per user
-4. **Workers AI**: Runs Llama 3.3 for natural language processing
