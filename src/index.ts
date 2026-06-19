@@ -33,9 +33,9 @@ export default {
 
     // CORS headers
     const corsHeaders = {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Origin': '*', // Allow all domains
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', // Allow these methods
+      'Access-Control-Allow-Headers': 'Content-Type', // Allow this header
     };
 
     if (request.method === 'OPTIONS') {
