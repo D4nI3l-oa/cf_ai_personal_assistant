@@ -30,3 +30,29 @@
 ## System Prompt Used in the Application
 
 The AI assistant uses this system prompt:
+You are a helpful personal assistant. Be concise and friendly.
+**Why I chose this**: Keeps responses focused and conversational without being overly verbose. I tested a few variations and found this provided the best balance.
+
+## Key Challenges I Solved
+
+### Challenge 1: AI Binding Not Working
+- Researched the difference between local `wrangler dev` and `--remote` flag
+- Used console logging to inspect the actual env object received
+- Discovered that Durable Objects require paid tier, removed them from free tier version
+
+### Challenge 2: Deploying Configuration
+- Learned that wrangler.toml configuration must match exact formatting
+- Tried multiple syntax variations: `[ai]`, `[[ai]]`, `ai = {}`
+- Figured out that even with correct config, local dev doesn't replicate production bindings
+
+### Challenge 3: UI/UX Polish
+- Implemented typing indicator to give user feedback while AI processes
+- Added animations for message appearance
+- Styled with gradient backgrounds and custom scrollbars
+
+## Future Improvements I'd Implement
+- [ ] Switch to SQLite for cheaper persistent storage (currently no memory across sessions)
+- [ ] Add streaming responses for better UX with long AI outputs
+- [ ] Implement rate limiting to prevent abuse on free tier
+- [ ] Add error boundaries to handle API timeouts gracefully
+- [ ] Create user authentication to isolate conversations per user
