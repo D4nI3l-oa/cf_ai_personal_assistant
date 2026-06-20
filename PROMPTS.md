@@ -19,7 +19,7 @@
 - Figured out the wrangler.toml config format wasn't being recognized and tried multiple formats until it worked
 
 ### UI Development
-"What are best practices for building a chat interface? Should I use a framework or vanilla JavaScript? What CSS approach would give a modern, dark-mode aesthetic?"
+"What are best practices for building a chat interface? Should I use a framework or JavaScript? What CSS approach would give a modern, dark-mode aesthetic?"
 
 **My Design Decisions**:
 - Chose vanilla JavaScript (no React) to keep it simple and deployable in a single file
