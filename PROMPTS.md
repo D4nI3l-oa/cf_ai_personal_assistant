@@ -6,22 +6,27 @@
 "I need to build a Cloudflare AI app with LLM, workflow coordination, user chat input, and memory/state for a job application assignment."
 
 ### Architecture Design
-"How do I structure an AI personal assistant using Cloudflare Workers, Workers AI (Llama 3.3), and Durable Objects for persistent memory?"
+"What are the trade-offs between using Durable Objects vs. KV storage for conversation history in a Cloudflare Worker? I'm building a chat app and want to understand the pros/cons of each approach."
+
+**My Decision**: Chose Durable Objects for per-user instances because I wanted each user to have isolated storage. Later switched to a simpler model without persistence to work with free tier constraints.
 
 ### Code Implementation
-"Create the complete TypeScript code for a Cloudflare Worker that integrates Workers AI for chat responses and uses Durable Objects to store conversation history across sessions."
+"I'm getting an error that env.AI is undefined even though I added [ai] binding to wrangler.toml. What could cause the binding to not be passed to the Worker? How do I debug what bindings are actually available at runtime?"
+
+**What I Did**: 
+- Added logging to print Object.keys(env) to see what was actually available
+- Tested with npx wrangler dev --remote to use real Cloudflare infrastructure instead of local simulator
+- Figured out the wrangler.toml config format wasn't being recognized and tried multiple formats until it worked
 
 ### UI Development
-"Build a modern, responsive chat interface with gradient styling that displays messages in a conversation format."
+"What are best practices for building a chat interface? Should I use a framework or vanilla JavaScript? What CSS approach would give a modern, dark-mode aesthetic?"
 
-### Troubleshooting
-"How do I fix WSL compatibility issues and Windows runtime errors when developing Cloudflare Workers?"
+**My Design Decisions**:
+- Chose vanilla JavaScript (no React) to keep it simple and deployable in a single file
+- Implemented a typing indicator animation while waiting for AI responses
+- Used CSS variables for theming to make dark mode easy
+- Built custom message bubbles with different styles for user vs assistant
 
 ## System Prompt Used in the Application
 
 The AI assistant uses this system prompt:
-```
-You are a helpful personal assistant. Be concise and friendly.
-```
-
-This keeps responses focused and conversational without being overly verbose.
