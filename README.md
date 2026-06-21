@@ -63,7 +63,7 @@ npx wrangler login
 npm run deploy
 ```
 
-After deploy, Wrangler prints your live URL (e.g. `https://cf-ai-personal-assistant.<subdomain>.workers.dev`).
+After deploy, Wrangler prints your live URL (e.g. `https://cf-ai-personal-assistant.onuohadaniel06.workers.dev`).
 
 ---
 
